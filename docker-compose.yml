@@ -1,0 +1,11 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: sutom
+      POSTGRES_USER: sutom
+      POSTGRES_PASSWORD: sutom
