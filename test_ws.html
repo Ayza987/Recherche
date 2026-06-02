@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+
+<body>
+
+<h1>CUSTOM Monitoring</h1>
+
+<pre id="output"></pre>
+
+<script>
+
+const ws =
+new WebSocket(
+"ws://localhost:8000/ws"
+);
+
+ws.onopen = () => {
+
+    ws.send("start");
+};
+
+ws.onmessage = event => {
+
+    document
+        .getElementById("output")
+        .textContent =
+        event.data;
+};
+
+</script>
+
+</body>
+
+</html>
