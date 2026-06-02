@@ -1,2 +1,1 @@
-# SUTOM Backend
-Architecture FastAPI + WebSocket + PostgreSQL.
+Backend application
