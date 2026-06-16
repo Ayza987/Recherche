@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.services.master_service import MasterService
-from app.config import MASTER_1_IP
+from app.config import MASTER_IP
 
 router = APIRouter()
 
@@ -9,7 +9,7 @@ router = APIRouter()
 @router.get("/tree")
 async def get_tree():
 
-    master = MasterService(MASTER_1_IP)
+    master = MasterService(MASTER_IP)
 
     return await master.request(
         1,

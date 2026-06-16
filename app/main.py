@@ -1,35 +1,48 @@
+import asyncio
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi import WebSocket
+from fastapi import WebSocketDisconnect
 
-from app.websocket.ws_manager import manager
-from app.services.realtime_service import RealtimeService
+from app.api.websocket import manager
+
+from app.database.database import (
+    Base,
+    engine
+)
+
+from app.services.scheduler_service import (
+    collector_loop
+)
 
 
-realtime_service = RealtimeService()
+Base.metadata.create_all(
+    bind=engine
+)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    import asyncio
-
-    asyncio.create_task(
-        realtime_service.run()
+    task = asyncio.create_task(
+        collector_loop()
     )
 
     yield
 
+    task.cancel()
+
 
 app = FastAPI(
-    title="CUSTOM Backend",
+    title="CUSTOM API",
     lifespan=lifespan
 )
 
 
-@app.get("/health")
-async def health():
+@app.get("/")
+async def root():
 
     return {
         "status": "running"
@@ -51,7 +64,7 @@ async def websocket_endpoint(
 
             await websocket.receive_text()
 
-    except Exception:
+    except WebSocketDisconnect:
 
         manager.disconnect(
             websocket

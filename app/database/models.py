@@ -2,17 +2,23 @@ from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import DateTime
-from sqlalchemy import Boolean
-from sqlalchemy import ForeignKey
+
+from datetime import datetime
 
 from app.database.database import Base
 
 
-class Sensor(Base):
+class SensorReading(Base):
 
-    __tablename__ = "sensors"
+    __tablename__ = "sensor_readings"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    port = Column(Integer)
 
     serial_number = Column(String)
 
@@ -20,28 +26,13 @@ class Sensor(Base):
 
     hardware = Column(String)
 
-    master_ip = Column(String)
-
-    port = Column(Integer)
-
-    active = Column(Boolean)
-
-
-class SensorReading(Base):
-
-    __tablename__ = "sensor_readings"
-
-    id = Column(Integer, primary_key=True)
-
-    sensor_id = Column(
-        Integer,
-        ForeignKey("sensors.id")
-    )
-
     operating_hours = Column(Integer)
 
-    power_cycles = Column(Integer)
+    power_on_cycles = Column(String)
 
     device_status = Column(String)
 
-    timestamp = Column(DateTime)
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
