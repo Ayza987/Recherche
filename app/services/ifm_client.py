@@ -13,7 +13,7 @@ import json
 import logging
 from typing import Optional, Any
 
-import config
+from app import config
 
 log = logging.getLogger("ifm_client")
 
