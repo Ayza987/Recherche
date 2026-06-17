@@ -13,7 +13,7 @@ import json
 import logging
 from typing import Optional, Any
 
-from app import config
+import config
 
 log = logging.getLogger("ifm_client")
 
@@ -146,30 +146,35 @@ class IFMClient:
         """Process data input — valeur mesurée en hexstring (ex: '0206FD0000000000')."""
         return self._getdata(f"/iolinkmaster/port[{port}]/iolinkdevice/pdin")
 
-    def get_device_events(self, port: int) -> Optional[str]:
-       """Événements IO-Link actifs sur le capteur (hexstring)."""
-       return self._getdata(f"/iolinkmaster/port[{port}]/iolinkdevice/iolinkevent")
+    def get_device_events(self, port: int):
+        """
+        Désactivé temporairement.
+        Certains capteurs du labo renvoient 503.
+        """
+        return None
 
     # ── Paramètres acycliques (santé) ────────────────────────
 
-    def read_acyclic(self, port: int, index: int, subindex: int = 0) -> Optional[dict]:
-        """Lecture acyclique ISDU d'un paramètre capteur."""
-        return self._request(
-            f"/iolinkmaster/port[{port}]/iolinkdevice/iolreadacyclic",
-            data={"index": index, "subindex": subindex}
-        )
+    def read_acyclic(
+            self,
+            port: int,
+            index: int,
+            subindex: int = 0
+    ):
+        """
+        Désactivé temporairement.
+        Les capteurs SICK renvoient erreur 531.
+        """
+        return None
 
-    def get_port_health_params(self, port: int) -> dict:
-        """Lit les paramètres de santé configurés (ISDU)."""
-        health = {}
-        for param in config.HEALTH_ISDU_PARAMS:
-            result = self.read_acyclic(port, param["index"], param["subindex"])
-            if result and "value" in result:
-                health[param["name"]] = {
-                    "hex_value": result["value"],
-                    "index": param["index"],
-                }
-        return health
+    def get_port_health_params(
+            self,
+            port: int
+    ) -> dict:
+        """
+        Désactivé temporairement.
+        """
+        return {}
 
     # ── Collecte complète d'un port ──────────────────────────
 
@@ -207,21 +212,19 @@ class IFMClient:
             return result
 
         # 4. Process data
-        pdin = self.get_pdin(port)
-        if pdin is not None:
-            result["pdin_hex"] = pdin
-        else:
-            result["errors"].append("pdin non disponible")
+        try:
 
-        # 5. Events
-        events = self.get_device_events(port)
-        if events is not None:
-            result["iolinkevent_hex"] = events
-            result["has_event"] = events not in ("0000000000000000", "00", "")
-        else:
-            result["errors"].append("iolinkevent non disponible")
+            pdin = self.get_pdin(port)
 
-        # 6. Paramètres de santé acycliques
-        result["health_parameters"] = self.get_port_health_params(port)
+            if pdin is not None:
+                result["pdin_hex"] = pdin
 
-        return result
+        except Exception:
+
+            pass
+
+        # Events désactivés
+        result["has_event"] = False
+
+        # Paramètres ISDU désactivés
+        result["health_parameters"] = {}
