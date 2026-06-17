@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 MASTER_IP = os.getenv(
     "MASTER_IP",

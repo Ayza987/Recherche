@@ -6,32 +6,66 @@ class SensorRepository:
     @staticmethod
     def save(db, sensor):
 
+        health = sensor.get(
+            "health_parameters",
+            {}
+        )
+
         row = SensorReading(
 
-            port=sensor.get("port"),
-
-            serial_number=sensor.get(
-                "serial_number"
+            port=sensor.get(
+                "port"
             ),
 
-            firmware=sensor.get(
-                "firmware"
+            port_label=sensor.get(
+                "port_label"
             ),
 
-            hardware=sensor.get(
-                "hardware"
+            serial_number=health.get(
+                "serial_number",
+                {}
+            ).get(
+                "hex_value"
             ),
 
-            operating_hours=sensor.get(
-                "operating_hours"
+            firmware=health.get(
+                "firmware",
+                {}
+            ).get(
+                "hex_value"
             ),
 
-            power_on_cycles=sensor.get(
-                "power_on_cycles"
+            hardware=health.get(
+                "hardware",
+                {}
+            ).get(
+                "hex_value"
+            ),
+
+            operating_hours=health.get(
+                "operating_hours",
+                {}
+            ).get(
+                "hex_value"
+            ),
+
+            power_on_cycles=health.get(
+                "power_on_cycles",
+                {}
+            ).get(
+                "hex_value"
             ),
 
             device_status=sensor.get(
-                "device_status"
+                "device_status_label"
+            ),
+
+            pdin_hex=sensor.get(
+                "pdin_hex"
+            ),
+
+            iolinkevent_hex=sensor.get(
+                "iolinkevent_hex"
             )
         )
 

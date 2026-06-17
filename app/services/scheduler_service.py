@@ -9,13 +9,12 @@ from app.database.database import SessionLocal
 from app.database.repository import (
     SensorRepository
 )
-
-from app.services.collector_service import (
-    CollectorService
+from app.services.master_service import (
+    MasterService
 )
 
 
-collector = CollectorService()
+master = MasterService()
 
 
 async def collector_loop():
@@ -24,11 +23,11 @@ async def collector_loop():
 
         try:
 
-            sensors = collector.collect()
+            data = master.collect()
 
             db = SessionLocal()
 
-            for sensor in sensors:
+            for sensor in data["ports"]:
 
                 SensorRepository.save(
                     db,
@@ -36,7 +35,7 @@ async def collector_loop():
                 )
 
             await manager.broadcast(
-                sensors
+                data
             )
 
             db.close()

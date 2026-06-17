@@ -1,4 +1,4 @@
-from app.services.master_service import IFMClient
+'''from app.services.master_service import IFMClient
 from app.services.decoder_service import DecoderService
 
 
@@ -95,4 +95,4 @@ class CollectorService:
                 sensor
             )
 
-        return result
+        return result'''
