@@ -79,9 +79,9 @@ class IFMClient:
                 log.warning(f"ifm erreur {resp.get('code')} sur [{adr}] → {resp}")
                 return None
         except requests.exceptions.ConnectionError:
-            log.error(f"❌ Impossible de joindre {config.MASTER_IP}:{config.MASTER_PORT}")
+            log.error(f"Impossible de joindre {config.MASTER_IP}:{config.MASTER_PORT}")
         except requests.exceptions.Timeout:
-            log.error(f"⏱ Timeout sur [{adr}]")
+            log.error(f"Timeout sur [{adr}]")
         except requests.exceptions.HTTPError as e:
             log.warning(f"HTTP erreur sur [{adr}] : {e}")
         except Exception as e:
@@ -146,9 +146,7 @@ class IFMClient:
         """Process data input — valeur mesurée en hexstring (ex: '0206FD0000000000')."""
         return self._getdata(f"/iolinkmaster/port[{port}]/iolinkdevice/pdin")
 
-    def get_device_events(self, port: int) -> Optional[str]:
-        """Événements IO-Link actifs sur le capteur (hexstring)."""
-        return self._getdata(f"/iolinkmaster/port[{port}]/iolinkdevice/iolinkevent")
+
 
     # ── Paramètres acycliques (santé) ────────────────────────
 
@@ -159,17 +157,7 @@ class IFMClient:
             data={"index": index, "subindex": subindex}
         )
 
-    def get_port_health_params(self, port: int) -> dict:
-        """Lit les paramètres de santé configurés (ISDU)."""
-        health = {}
-        for param in config.HEALTH_ISDU_PARAMS:
-            result = self.read_acyclic(port, param["index"], param["subindex"])
-            if result and "value" in result:
-                health[param["name"]] = {
-                    "hex_value": result["value"],
-                    "index": param["index"],
-                }
-        return health
+
 
     # ── Collecte complète d'un port ──────────────────────────
 
